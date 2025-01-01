@@ -1,24 +1,39 @@
 import express = require('express')
-// import package = require("../models/packages")
+import jwt = require('jsonwebtoken')
+import {packagesData} from "../models/packages"
 
 const router = express.Router()
-import jwt = require('jsonwebtoken')
 
-router.get('/:id', async (req: any, res: any) => {
+router.route('/:userId')
+        .get(async (req: any, res: any) => {
+            try {
 
+
+                const data = await packagesData(req.params.userId)
+                if (!data) res.status(500).json({message: 'Server error'})
+                res.send(JSON.stringify(data))
+            } catch (err) {
+                console.error(err)
+                res.status(500).json({message: 'Server error'})
+            }
+        })
+        .put(async (req: any, res: any) => {
+            res.send(`User data for user ID: ${req.params.userId}`);
+        })
+        .delete(async (req: any, res: any) => {
+            res.send(`User data for user ID: ${req.params.userId}`);
+        })
+
+router.param('userId', (req: any, res: any, next: any, userId) => {
+    const token = req.headers['authorization']
+    if (token == null) return res.sendStatus(401);
+    jwt.verify(token, 'chess-berger-123123-haze-mean', (err: Error, decoded: any) => {
+        if (err) return res.sendStatus(403)
+        if (userId.toString() !== decoded.uid.toString()) return res.sendStatus(403)
+        userId = decoded.uid
+        next()
+    })
 })
 
-function extractToken(req:any, res:any, next:any) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Extract token from 'Bearer <token>'
-
-    if (token == null) return res.sendStatus(401); // Unauthorized
-
-    jwt.verify(token, 'your_secret_key', (err, decoded) => {
-        if (err) return res.sendStatus(403); // Forbidden
-        req.userId = decoded.userId;
-        next();
-    });
-}
 
 module.exports = router

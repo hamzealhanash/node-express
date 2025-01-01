@@ -1,7 +1,7 @@
-import mariadb = require('mariadb');
+import {Connection, createConnection} from "mariadb";
 
-async function createUser(username: string, password: string, email: string) {
-    let db: mariadb.Connection
+export async function createUser(username: string, password: string, email: string) {
+    let db: Connection
     try {
         db = await connect()
         await db.execute("INSERT INTO usersData (username) VALUES (?)", [username])
@@ -17,8 +17,8 @@ async function createUser(username: string, password: string, email: string) {
     }
 }
 
-async function getUser(email: string, username: string) {
-    let db: mariadb.Connection
+export async function getUser(email: string, username: string) {
+    let db: Connection
     try {
         db = await connect()
         const [rows] = await db.execute("SELECT * FROM authInfo WHERE email = ? or username = ?", [email, username])
@@ -32,12 +32,10 @@ async function getUser(email: string, username: string) {
 }
 
 async function connect() {
-    return await mariadb.createConnection({
+    return await createConnection({
         host: "localhost",
         user: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_DATABASE
     })
 }
-
-module.exports = {createUser, getUser}

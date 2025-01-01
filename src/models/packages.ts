@@ -1,8 +1,7 @@
-import mariadb = require('mariadb')
+import {Connection, createConnection} from "mariadb";
 
-
-async function packages(uid: string) {
-    let db: mariadb.Connection
+export async function packagesData(uid: string) {
+    let db: Connection
     try {
         db = await connect()
         // take the user id from the token and get the username from the table to get all the user shipment
@@ -13,11 +12,13 @@ async function packages(uid: string) {
     } catch (error) {
         console.log(error)
         throw error
+    } finally {
+        if (db) await db.end()
     }
 }
 
 async function connect() {
-    return await mariadb.createConnection({
+    return await createConnection({
         host: "localhost",
         user: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
@@ -25,4 +26,3 @@ async function connect() {
     })
 }
 
-module.exports = packages
