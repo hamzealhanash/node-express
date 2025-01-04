@@ -1,6 +1,6 @@
 import {Connection, createConnection} from "mariadb";
 
-export async function createUser(username: string, password: string, email: string) {
+async function createUser(username: string, password: string, email: string) {
     let db: Connection
     try {
         db = await connect()
@@ -17,14 +17,14 @@ export async function createUser(username: string, password: string, email: stri
     }
 }
 
-export async function getUser(email: string, username: string) {
+async function getUser(email: string, username: string) {
     let db: Connection
     try {
         db = await connect()
         const [rows] = await db.execute("SELECT * FROM authInfo WHERE email = ? or username = ?", [email, username])
         return rows
     } catch (error) {
-        console.error('Error occurred while getting user:', error);
+        console.error('Error occurred while getting user:', error)
         throw error
     } finally {
         if (db) await db.end();
@@ -39,3 +39,5 @@ async function connect() {
         database: process.env.DB_DATABASE
     })
 }
+
+export {createUser, getUser}

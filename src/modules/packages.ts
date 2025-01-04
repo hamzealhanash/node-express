@@ -1,21 +1,22 @@
 import {Connection, createConnection} from "mariadb";
 
-export async function packagesData(uid: string) {
+async function getShipment(uid: string) {
     let db: Connection
     try {
         db = await connect()
-        // take the user id from the token and get the username from the table to get all the user shipment
-        const user = await db.query("SELECT username FROM test1.authInfo where uid= ? ", [uid])
+        const [user] = await db.query("SELECT username FROM test1.authInfo where uid= ? ", [uid])
         if (!user) new Error("could not find user")
-        const [shipment] = await db.query("SELECT * FROM test1.Shipment where transporter = ? ", [user?.username])
-        return shipment
+        return await db.query("SELECT * FROM test1.Shipment where transporter = ? ", [user?.username])
     } catch (error) {
-        console.log(error)
         throw error
     } finally {
         if (db) await db.end()
     }
 }
+
+// async function updateShipments() {
+// }
+
 
 async function connect() {
     return await createConnection({
@@ -26,3 +27,4 @@ async function connect() {
     })
 }
 
+export {getShipment}

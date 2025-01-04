@@ -2,7 +2,7 @@ import 'dotenv/config'
 import fs = require('fs')
 import express = require('express')
 import {Application} from 'express'
-import logger from './scripts/logger'
+import logger from './functions/logger'
 import {createServer as http} from "http"
 import bodyParser = require('body-parser')
 import {createServer as https} from "https"
@@ -20,12 +20,12 @@ app.use(bodyParser.urlencoded({limit: "10mb", extended: false}))
 app.use(express.json())
 
 // logger
-app.use((req: any, res: any, next) => logger(req, res, next))
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => logger(req, res, next, null))
 
 //app routes
 app.use('/api/auth', authRouter as Application)
-app.use('/data/shipment', shipmentRouter as Application)
-app.get("/", (_req: any, res: any) => res.send("test"))
+app.use('/api/data/shipments', shipmentRouter as Application)
+app.get("/", (_req: express.Request, res: express.Response) => res.send("test"))
 
 // running server on http and https
 http(app).listen(HTTP_PORT, () => {

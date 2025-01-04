@@ -1,5 +1,5 @@
 {
-  "name": "untitled1",
+  "name": "node-express",
   "version": "1.0.0",
   "main": "src/server.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "dotenv": "^16.4.7"
   },
   "dependencies": {
+    "@types/express-serve-static-core": "^5.0.3",
     "body-parser": "^1.20.3",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",

@@ -1,11 +1,11 @@
 import express = require('express')
 import {sign} from "jsonwebtoken";
 import {createHash} from "crypto"
-import {createUser, getUser} from '../models/users'
+import {createUser, getUser} from '../modules/users'
 
 const router = express.Router()
 
-router.post('/register', async (req: any, res: any) => {
+router.post('/register', async (req: express.Request, res: express.Response) => {
     const {email, username, password} = req.body
     try {
         // Check if user already exists
@@ -26,8 +26,8 @@ router.post('/register', async (req: any, res: any) => {
         res.status(500).json({message: 'Server error'})
     }
 })
-router.post('/login', async (req: any, res:any) => {
-    const {email, username, password} = req.body;
+router.post('/login', async (req: express.Request, res: express.Response) => {
+    const {email, username, password} = req.body
     try {
         const user = await getUser(email, username)
         if (!user)
