@@ -28,8 +28,6 @@ router.route('/')
                 res.status(500).json({message: 'Server error'})
             }
         })
-        .delete(authenticate, async (req: express.Request, res: express.Response) => {
 
-        })
 
 module.exports = router
