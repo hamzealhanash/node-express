@@ -1,10 +1,10 @@
 import {Connection, createConnection} from "mariadb";
 
-async function getShipment(uid: string) {
+async function getShipment(userId: string) {
     let db: Connection
     try {
         db = await connect()
-        const [user] = await db.query("SELECT username FROM test1.authInfo where uid= ? ", [uid])
+        const [user] = await db.query("SELECT username FROM test1.authInfo where uid= ? ", [userId])
         if (!user) new Error("could not find user")
         return await db.query("SELECT * FROM test1.Shipment where transporter = ? ", [user?.username])
     } catch (error) {
@@ -14,8 +14,22 @@ async function getShipment(uid: string) {
     }
 }
 
-// async function updateShipments() {
-// }
+async function updateShipments(userId: string, packageId: string, state: string) {
+    let db: Connection
+    try {
+        db = await connect()
+        const [user] = await db.query("SELECT username FROM test1.authInfo where uid= ? ", [userId])
+        if (!user) new Error("could not find user")
+        const [update] = await
+                db.query("UPDATE test1.packagesDetails SET state = ? WHERE carrier = ? and packageId = ? ", [state, user?.username, packageId])
+        if (!update) new Error("Could not update package status")
+        return update
+    } catch (err) {
+        throw err
+    } finally {
+        if (db) await db.end()
+    }
+}
 
 
 async function connect() {
@@ -27,4 +41,4 @@ async function connect() {
     })
 }
 
-export {getShipment}
+export {getShipment, updateShipments}

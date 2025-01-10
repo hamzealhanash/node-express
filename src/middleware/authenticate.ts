@@ -6,7 +6,6 @@ export default function authenticate(req: express.Request, res: express.Response
     const token = req.headers.authorization?.split(' ')[1]
     if (!token) return res.status(401).json({message: 'no token provided'})
     try {
-        // @ts-ignore
         jwt.verify(token, 'chess-berger-123123-haze-mean', (error, decode) => {
             if (error) {
 
